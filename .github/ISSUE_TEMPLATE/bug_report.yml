@@ -1,0 +1,63 @@
+name: Bug report
+description: Something behaves differently than it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not paste links to material you do not have the right to
+        download. A description of the site or stream type is enough.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Paste a link to ...
+        2. Pick quality ...
+        3. Press Download
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error message
+      description: >
+        If the download failed, copy the message from the queue card. The
+        technical detail in it is deliberately not translated, so paste it
+        as-is.
+      render: text
+
+  - type: input
+    id: version
+    attributes:
+      label: VDrop version
+      description: Settings, then About.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [Windows, macOS]
+    validations:
+      required: true
+
+  - type: textarea
+    id: components
+    attributes:
+      label: Components
+      description: >
+        Settings, then Components. Whether FFmpeg and yt-dlp are installed
+        decides which code path ran, so this often answers the question by
+        itself.

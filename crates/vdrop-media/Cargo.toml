@@ -1,0 +1,13 @@
+[package]
+name = "vdrop-media"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util", "process", "sync", "time"] }
+thiserror = "1"
+vdrop-download = { path = "../vdrop-download" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }

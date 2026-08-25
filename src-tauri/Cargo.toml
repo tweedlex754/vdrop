@@ -1,0 +1,28 @@
+[package]
+name = "vdrop"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-clipboard-manager = "2"
+reqwest = { version = "0.11", default-features = false, features = ["stream", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4"] }
+vdrop-download = { path = "../crates/vdrop-download" }
+vdrop-media = { path = "../crates/vdrop-media" }
+vdrop-providers = { path = "../crates/vdrop-providers" }
+vdrop-storage = { path = "../crates/vdrop-storage" }
+vdrop-ytdlp = { path = "../crates/vdrop-ytdlp" }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

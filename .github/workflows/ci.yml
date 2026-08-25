@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# Aynı dal için üst üste gelen koşuları iptal et: son commit dışındakilerin
+# sonucu zaten kimseyi ilgilendirmiyor.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Çekirdek crate'ler masaüstü kabuğundan bağımsız derlenip test edilebiliyor
+  # (mimarideki asıl kural bu), o yüzden Linux'ta koşuyorlar: Tauri'nin sistem
+  # bağımlılıkları gerekmiyor ve iş dakikalar yerine saniyeler sürüyor.
+  crates:
+    name: Rust crates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Clippy (uyarılar hata sayılır)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        # Ağ gerektiren testler `#[ignore]` işaretli; burada koşmuyorlar.
+        run: cargo test --workspace
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tip denetimi
+        run: npx tsc --noEmit -p frontend/tsconfig.json
+
+      - name: Test
+        run: npm run test:front
+
+  # Masaüstü kabuğu yalnızca kendi hedef platformunda anlamlı derleniyor, o
+  # yüzden ikisinde birden koşuyor. Tek platformda yeşil olan kabuk diğerinde
+  # derlenmeyebilir: `cfg(windows)` blokları ve ikili adları ancak orada
+  # derlenince sınanır.
+  shell:
+    name: Desktop shell (${{ matrix.platform }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Tauri arayüzü derlenmiş halde bekler; `beforeBuildCommand` yalnızca
+      # `tauri build` içinde çalıştığı için burada elle üretiyoruz.
+      - name: Arayüzü derle
+        run: npm run build
+
+      - name: Kabuk testleri
+        working-directory: src-tauri
+        run: cargo test

@@ -1,0 +1,21 @@
+# Rust
+target/
+**/target/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor/araç yerel ayarları: makineye özgü mutlak yollar taşır.
+.claude/
+.vscode/
+.idea/

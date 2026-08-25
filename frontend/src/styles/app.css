@@ -1,0 +1,1291 @@
+/* ===========================================================================
+   Kabuk, bilesenler ve ekranlar — Lumina Desktop
+   =========================================================================== */
+
+/* --- Uygulama kabugu ----------------------------------------------------
+   Kenar cubugu | icerik  +  altta tam genislik durum cubugu.
+   Durum cubugu her ekranda gorunur: kullanici hangi sayfada olursa olsun
+   "bir sey iniyor mu, ne hizda" sorusunun cevabi hep ayni yerde.          */
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: 1fr var(--statusbar-h);
+  grid-template-areas:
+    "sidebar content"
+    "statusbar statusbar";
+  height: 100%;
+  background: var(--surface);
+}
+
+.content {
+  grid-area: content;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.content-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--margin-md) var(--margin-lg) var(--margin-lg);
+}
+
+/* --- Kenar cubugu -------------------------------------------------------
+   Tasarim dokumani "Vibrancy": yari saydam + bulanik zemin. Isletim
+   sisteminin kendi panelleri gibi dursun.                                 */
+
+.sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  padding: var(--gutter) var(--margin-sm);
+  background: var(--chrome);
+  backdrop-filter: var(--chrome-blur);
+  -webkit-backdrop-filter: var(--chrome-blur);
+  border-right: 1px solid var(--chrome-border);
+  min-width: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  padding: 4px 8px var(--gutter);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+  background: var(--primary-container);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--on-primary-container);
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: var(--t-ui);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--primary);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  color: var(--on-surface-variant);
+  font-size: var(--t-ui);
+  font-weight: 500;
+  text-align: start;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.nav-item:hover {
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+  color: var(--on-surface);
+}
+
+/* Aktif satir: tasarim dokumanindaki "5% primary tint" + tam kontrast metin. */
+.nav-item.active {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+
+.nav-item svg {
+  flex-shrink: 0;
+}
+
+.nav-count {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-caption);
+  font-weight: 600;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  display: grid;
+  place-items: center;
+}
+
+/* Kenar cubugu ayagi: motor durumu. Alt durum cubugu anlik hizi gosterir,
+   burasi "sistem hazir mi" sorusunun cevabi. */
+.sidebar-foot {
+  margin-top: auto;
+  padding-top: var(--gutter);
+  border-top: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.engine-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  font-size: var(--t-caption);
+  font-weight: 500;
+  color: var(--on-surface-variant);
+}
+
+.engine-row.ok {
+  color: var(--success);
+}
+
+.engine-row.missing {
+  color: var(--warning);
+}
+
+/* --- Alt durum cubugu ---------------------------------------------------- */
+
+.statusbar {
+  grid-area: statusbar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gutter);
+  padding: 0 var(--gutter);
+  background: var(--chrome);
+  backdrop-filter: var(--chrome-blur);
+  -webkit-backdrop-filter: var(--chrome-blur);
+  border-top: 1px solid var(--chrome-border);
+  font-size: var(--t-caption);
+  font-weight: 500;
+}
+
+.statusbar-metrics {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.statusbar-metrics.live {
+  color: var(--success);
+}
+
+.statusbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.statusbar-actions button {
+  padding: 3px 10px;
+  border-radius: var(--r-xs);
+  color: var(--on-surface-variant);
+  font-size: var(--t-caption);
+  font-weight: 500;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.statusbar-actions button:hover:not(:disabled) {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+}
+
+.statusbar-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: currentColor;
+  flex-shrink: 0;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* --- Tipografi siniflari -------------------------------------------------- */
+
+.display {
+  font-size: var(--t-display);
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: -0.02em;
+}
+
+.title {
+  font-size: var(--t-title);
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+}
+
+.section-title {
+  font-size: var(--t-section);
+  font-weight: 600;
+  line-height: 24px;
+}
+
+/* --- Sayfa basliklari ----------------------------------------------------- */
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gutter);
+  margin-bottom: var(--margin-md);
+}
+
+.page-head-main {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  min-width: 0;
+}
+
+.page-head-icon {
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.page-sub {
+  margin-top: 2px;
+  font-size: var(--t-body);
+  color: var(--on-surface-variant);
+}
+
+/* --- Dugmeler ------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-lowest);
+  color: var(--on-surface);
+  font-size: var(--t-body);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 140ms ease, border-color 140ms ease, opacity 140ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-container-high);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  /* Tasarim dokumani: hover zemini %5 aydinlatir. */
+  background: color-mix(in srgb, var(--primary) 92%, white);
+  border-color: transparent;
+}
+
+.btn-danger {
+  color: var(--error);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--error-container);
+  border-color: var(--error);
+  color: var(--on-error-container);
+}
+
+.btn-lg {
+  padding: 11px 20px;
+  font-size: var(--t-ui);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--on-surface-variant);
+  padding: 7px 10px;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+}
+
+/* --- Kart / panel --------------------------------------------------------- */
+
+.card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  /* Ust kenardaki 1px "pah": tasarim dokumanindaki beveled edge. */
+  border-top-color: var(--bevel);
+}
+
+.panel {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+/* --- Ana ekran: URL girisi ------------------------------------------------ */
+
+.home {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--margin-lg) var(--margin-lg) 60px;
+  gap: var(--margin-md);
+}
+
+.home-title {
+  text-align: center;
+}
+
+.intake {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(750px, 100%);
+  padding: 6px 6px 6px 8px;
+  background: var(--surface-container);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+/* Tasarim dokumani: girdi alanlari yuzeye gore "icerlek" durur. */
+.intake:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.intake input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  color: var(--on-surface);
+  font-size: var(--t-ui);
+  user-select: text;
+  cursor: text;
+}
+
+.intake input:focus {
+  outline: none;
+}
+
+.intake input::placeholder {
+  color: var(--on-surface-variant);
+}
+
+/* Ayarlardaki acilir liste (dil). `.format-select` tam genislik kaplar;
+   ayar satirinda ad ve deger yan yana durdugu icin sinirlaniyor. */
+.setting-select {
+  width: min(240px, 46vw);
+}
+
+/* Ayarlardaki sayi girdisi (hiz siniri). Kaydiracla ayni satirda
+   durabilmesi icin ayni dikey olcuye oturtuldu. */
+.setting-number {
+  width: 96px;
+  padding: 6px 8px;
+  background: var(--surface-container);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm, 8px);
+  color: var(--on-surface);
+  font-size: var(--t-ui);
+  text-align: right;
+}
+
+.setting-number:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+/* --- Arama kutusu --------------------------------------------------------- */
+
+/* `.intake` ile ayni dil: icerlek yuzey, odakta primary halka. Fark olcek -
+   bu kutu bir baslik satirinda duruyor, sayfanin ortasinda degil. */
+.searchbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(280px, 40vw);
+  padding: 2px 6px 2px 9px;
+  background: var(--surface-container);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.searchbox:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.searchbox input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 2px;
+  border: none;
+  background: transparent;
+  color: var(--on-surface);
+  font-size: var(--t-ui);
+  user-select: text;
+  cursor: text;
+}
+
+.searchbox input:focus {
+  outline: none;
+}
+
+.searchbox input::placeholder {
+  color: var(--on-surface-variant);
+}
+
+.searchbox-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+}
+
+.searchbox-clear:hover {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+}
+
+/* --- Onizleme karti ------------------------------------------------------- */
+
+.preview {
+  width: min(900px, 100%);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  overflow: hidden;
+}
+
+.preview-media {
+  position: relative;
+  background: var(--surface-container);
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  color: var(--outline);
+}
+
+.preview-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chips {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.chip {
+  padding: 2px 8px;
+  border-radius: var(--r-xs);
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(6px);
+}
+
+.duration-badge {
+  position: absolute;
+  bottom: 10px;
+  inset-inline-end: 10px;
+  padding: 2px 8px;
+  border-radius: var(--r-xs);
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-body {
+  padding: var(--margin-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-sm);
+  min-width: 0;
+}
+
+.preview-title {
+  font-size: var(--t-section);
+  font-weight: 600;
+  line-height: 24px;
+  word-break: break-word;
+  user-select: text;
+}
+
+.preview-by {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+}
+
+/* Video+Ses / Yalnizca ses secici */
+.track-toggle {
+  display: grid;
+  /* Sutun sayisi dugme sayisindan turer. Onceden `1fr 1fr` yaziyordu, yani
+     stil dosyasi "tam iki iz vardir" varsayimini kodluyordu; altyazi dugmesi
+     eklenince ucuncusu alt satira dusup grubun hizasini bozdu. */
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-container);
+  border-radius: var(--r-sm);
+}
+
+.track-toggle button {
+  padding: 8px;
+  border-radius: var(--r-xs);
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.track-toggle button[aria-pressed="true"] {
+  background: var(--surface-container-lowest);
+  color: var(--on-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.track-toggle button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Format secici: acilir liste. Onceki tasarimda radyo listesiydi; format
+   sayisi yt-dlp ile 20'yi asabildigi icin liste karti tasiyor. */
+.format-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-low);
+  color: var(--on-surface);
+  font-size: var(--t-body);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.format-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.preview-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.preview-actions .btn {
+  flex: 1;
+}
+
+.dest-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  min-width: 0;
+}
+
+.dest-line .path {
+  flex: 1;
+}
+
+/* --- Bildirim kutulari ---------------------------------------------------- */
+
+.note {
+  display: flex;
+  gap: var(--margin-sm);
+  align-items: flex-start;
+  width: min(900px, 100%);
+  padding: var(--margin-sm) var(--gutter);
+  border-radius: var(--r-sm);
+  font-size: var(--t-body);
+  border: 1px solid transparent;
+}
+
+.note-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.note-body {
+  user-select: text;
+}
+
+.note-danger {
+  background: var(--error-container);
+  border-color: color-mix(in srgb, var(--error) 30%, transparent);
+  color: var(--on-error-container);
+}
+
+.note-warn {
+  background: var(--warning-container);
+  border-color: color-mix(in srgb, var(--warning) 30%, transparent);
+  color: var(--on-warning-container);
+}
+
+.note-info {
+  background: var(--primary-container);
+  border-color: color-mix(in srgb, var(--primary) 26%, transparent);
+  color: var(--on-primary-container);
+}
+
+/* --- Ilerleme izi --------------------------------------------------------- */
+
+.track {
+  position: relative;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-container-high);
+  overflow: hidden;
+}
+
+.track-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--outline);
+  /* 400ms lineer: motor 500ms'de bir olay yayar, boylece dolgu adim adim
+     ziplamak yerine surekli akiyormus gibi gorunur. */
+  transition: width 400ms linear;
+}
+
+/* Tasarim dokumani: aktif indirmede vurgu renginin hafif isimasi. */
+.track.is-live .track-fill {
+  background: linear-gradient(
+    90deg,
+    var(--primary),
+    color-mix(in srgb, var(--primary) 75%, white)
+  );
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.track.is-done .track-fill {
+  background: var(--success);
+}
+
+.track.is-error .track-fill {
+  background: var(--error);
+}
+
+/* Belirsiz durum: kayan bir parilti. */
+.track.indeterminate .track-fill {
+  width: 32% !important;
+  animation: shimmer 1.4s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary),
+    transparent
+  );
+  box-shadow: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(420%); }
+}
+
+/* --- Kuyruk karti --------------------------------------------------------- */
+
+.queue-section + .queue-section {
+  margin-top: var(--margin-lg);
+}
+
+.queue-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--margin-sm);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: var(--gutter);
+  padding: var(--margin-sm);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.row:hover {
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+  border-color: var(--outline-variant);
+}
+
+.row-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-sm);
+  background: var(--surface-container);
+  display: grid;
+  place-items: center;
+  color: var(--outline);
+  overflow: hidden;
+}
+
+.row-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.row-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--t-body);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-meta {
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.row-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+  /* Islem dugmeleri satirin ustune gelince belirir; yogun listede 6 ikonun
+     surekli gorunmesi gurultu yapardi. */
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.row:hover .row-actions,
+.row:focus-within .row-actions {
+  opacity: 1;
+}
+
+.row-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+}
+
+.row-progress .track {
+  flex: 1;
+}
+
+.row-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  min-height: 16px;
+}
+
+.row-stats .live {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.row-error {
+  color: var(--error);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+
+/* --- Durum rozeti --------------------------------------------------------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+}
+
+.pill-downloading {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.pill-completed {
+  background: var(--success-container);
+  color: var(--on-success-container);
+}
+
+.pill-failed {
+  background: var(--error-container);
+  color: var(--on-error-container);
+}
+
+.pill-retrying {
+  background: var(--warning-container);
+  color: var(--on-warning-container);
+}
+
+/* --- Bos durum ------------------------------------------------------------ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+  gap: 8px;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-pill);
+  background: var(--surface-container);
+  display: grid;
+  place-items: center;
+  color: var(--outline);
+  margin-bottom: 8px;
+}
+
+.empty p {
+  font-size: var(--t-body);
+  color: var(--on-surface-variant);
+  max-width: 40ch;
+}
+
+/* --- Liste (kutuphane / gecmis) ------------------------------------------- */
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  padding: var(--margin-sm) var(--gutter);
+  border-bottom: 1px solid var(--outline-variant);
+  transition: background 140ms ease;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:hover {
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+
+.list-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.list-title {
+  font-size: var(--t-body);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-title.missing {
+  color: var(--on-surface-variant);
+  text-decoration: line-through;
+}
+
+.list-sub {
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  margin-top: 1px;
+}
+
+.list-item .row-actions {
+  opacity: 0;
+}
+
+.list-item:hover .row-actions,
+.list-item:focus-within .row-actions {
+  opacity: 1;
+}
+
+/* --- Ayarlar: alt navigasyon + icerik ------------------------------------- */
+
+.settings {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--margin-lg);
+  align-items: start;
+}
+
+.settings-nav {
+  position: sticky;
+  top: var(--margin-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav button {
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  text-align: start;
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.settings-nav button:hover {
+  background: var(--surface-container);
+  color: var(--on-surface);
+}
+
+.settings-nav button[aria-current="true"] {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+  padding: var(--gutter);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.setting:last-child {
+  border-bottom: none;
+}
+
+.setting-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.setting-name {
+  font-size: var(--t-body);
+  font-weight: 500;
+}
+
+.setting-hint {
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+}
+
+.setting-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bilesen karti: ikon + ad/durum + eylemler (mockup'taki bicim). */
+.component {
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+  padding: var(--gutter);
+  border-radius: var(--r-md);
+  background: var(--surface-container-low);
+  border: 1px solid transparent;
+}
+
+.component.needs-attention {
+  border-inline-start: 3px solid var(--warning);
+}
+
+.component-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: var(--surface-container-high);
+  display: grid;
+  place-items: center;
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+}
+
+.component-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.component-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-ui);
+  font-weight: 600;
+}
+
+.component-status {
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+  user-select: text;
+}
+
+/* --- Kontroller ----------------------------------------------------------- */
+
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  background: var(--surface-container);
+  border-radius: var(--r-sm);
+}
+
+.segmented button {
+  padding: 6px 14px;
+  border-radius: var(--r-xs);
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.segmented button:hover {
+  color: var(--on-surface);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--surface-container-lowest);
+  color: var(--on-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  background: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  transition: background 160ms ease, border-color 160ms ease;
+  flex-shrink: 0;
+}
+
+.switch[aria-checked="true"] {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-pill);
+  background: var(--outline);
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.3, 1), background 160ms ease;
+}
+
+.switch[aria-checked="true"]::after {
+  background: #fff;
+  transform: translateX(20px);
+}
+
+:root[dir="rtl"] .switch[aria-checked="true"]::after {
+  transform: translateX(-20px);
+}
+
+.slider {
+  width: 160px;
+  accent-color: var(--primary);
+}
+
+.setting-value {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-body);
+  color: var(--on-surface-variant);
+  min-width: 2ch;
+  text-align: end;
+}
+
+/* --- Pano bildirim seridi --------------------------------------------------
+   Sag altta, durum cubugunun uzerinde belirir.                              */
+
+.toast {
+  position: fixed;
+  inset-inline-end: var(--margin-md);
+  bottom: calc(var(--statusbar-h) + var(--gutter));
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--margin-sm);
+  max-width: min(460px, calc(100vw - 48px));
+  padding: var(--margin-sm) var(--margin-sm) var(--margin-sm) var(--gutter);
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-float);
+  animation: toast-in 240ms cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.toast-icon {
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.toast-title {
+  font-size: var(--t-body);
+  font-weight: 500;
+}
+
+.toast-label {
+  font-size: var(--t-caption);
+  color: var(--on-surface-variant);
+}
+
+.toast .btn {
+  flex-shrink: 0;
+}
+
+/* --- Duyarli davranis ------------------------------------------------------
+   Tasarim dokumani: < 800px'de kenar cubugu ikonlara iner.                  */
+
+@media (max-width: 800px) {
+  .shell {
+    grid-template-columns: 68px 1fr;
+  }
+  .brand-text,
+  .nav-item span:not(.nav-count),
+  .engine-row span {
+    display: none;
+  }
+  .nav-item {
+    justify-content: center;
+    padding: 10px 0;
+  }
+  .engine-row {
+    justify-content: center;
+  }
+  .content-inner {
+    padding: var(--gutter);
+  }
+  .preview {
+    grid-template-columns: 1fr;
+  }
+  .settings {
+    grid-template-columns: 1fr;
+    gap: var(--margin-md);
+  }
+  .settings-nav {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .row {
+    grid-template-columns: 92px 1fr;
+  }
+}

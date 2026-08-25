@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A site does not work
+    url: https://github.com/yt-dlp/yt-dlp/issues
+    about: >
+      Site-specific extraction is handled by yt-dlp, not by VDrop. If a
+      particular site fails to resolve while yt-dlp is installed, the fix
+      almost always belongs there. Open an issue here only if VDrop mishandles
+      what yt-dlp returned.
+
+  - name: Security issue
+    # Kasitli olarak Security sekmesine yonlendiriyoruz: depo adresini buraya
+    # gomsek, catallanan her kopyada yanlis depoya isaret ederdi.
+    url: https://docs.github.com/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability
+    about: >
+      Report privately through the Security tab of this repository instead of
+      opening a public issue. See SECURITY.md.

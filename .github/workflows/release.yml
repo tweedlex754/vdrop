@@ -1,0 +1,58 @@
+name: Release
+
+# Kurulum dosyalarını üreten tek yer burası. CI yalnızca test eder; bir sürüm
+# etiketi (v0.1.0 gibi) itildiğinde bu iş akışı her platformun yükleyicisini
+# derleyip Releases sayfasına yükler. Bu olmadan Releases boş kalır ve
+# kullanıcı indirecek bir dosya bulamaz.
+on:
+  push:
+    tags:
+      - "v*"
+  # Etiket atmadan elle denemek için.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            args: ""
+          - platform: macos-latest
+            args: "--target aarch64-apple-darwin"
+          - platform: macos-latest
+            args: "--target x86_64-apple-darwin"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}-dev', github.run_number) }}
+          releaseName: "VDrop __VERSION__"
+          releaseBody: "Kurulum dosyaları aşağıda. Windows derlemeleri henüz imzalı değil; SmartScreen ilk çalıştırmada uyarır."
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}

@@ -1,0 +1,17 @@
+[package]
+name = "vdrop-ytdlp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "io-util", "process", "sync", "time"] }
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+vdrop-download = { path = "../vdrop-download" }
+vdrop-providers = { path = "../vdrop-providers" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
